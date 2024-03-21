@@ -1,7 +1,7 @@
 # DDB Back End Developer Challenge
 
 An application and web server that exposes endpoints to heal and damage D&D characters.
-
+> Based on [DnDBeyond/ddb-back-end-developer-challenge](https://github.com/DnDBeyond/ddb-back-end-developer-challenge)
 ## API Documentation
 
 Documentation for the API can be accessed at <http://localhost:3000/docs> when running the dev server and at <http://localhost:80/docs> when running the production server.
