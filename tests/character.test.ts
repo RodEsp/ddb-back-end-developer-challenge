@@ -1,7 +1,11 @@
-import exp from 'constants';
 import saveData from '../data/briv.json';
+// @ts-ignore
+saveData.filename = 'testing';
+
 import Character from '../src/character';
 import { DamageType } from '../src/types';
+
+
 
 describe('character.ts', () => {
 	let c;
@@ -16,6 +20,7 @@ describe('character.ts', () => {
 
 	it ('should initialize a character correctly', () => {
 		// @ts-ignore
+		expect(c.id).toEqual(saveData.filename);
 		expect(c.name).toEqual(saveData.name);
 		expect(c.level).toEqual(saveData.level);
 		expect(c.hitPoints.current).toEqual(saveData.hitPoints);

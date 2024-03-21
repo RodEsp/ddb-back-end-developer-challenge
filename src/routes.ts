@@ -1,32 +1,36 @@
 import { Request, Response } from 'express';
-import { dealDamage, healHitPoints } from './session.js';
+import { characterExists, dealDamage, healHitPoints } from './session.js';
 import { DamageType, DamageTypes } from './types.js';
+
+interface APIError extends Error {
+	status: number,
+}
+function APIError(status: number, msg: string): APIError {
+	const error = new Error(msg) as APIError;
+	error.name = 'APIError';
+	error.status = status;
+	return error;
+}
 
 export default [
 	{ 
 		path: '/deal-damage',
-		handler: async (req: Request, res: Response) => {
+		handler: async (req: Request, res: Response): Promise<void | APIError> => {
 			try {
-				let { name, type, amount } = req.body;
+				let { character_id, amount, type } = req.body;
+				validateCharacter(character_id);
 
-				const sanitizedDamageType = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
-				const damageTypes = Object.keys(DamageType).filter(t => Number.isNaN(parseInt(t))); // Have to filter these because of how enums are represented as objects by Typescript
-				if (!damageTypes.find(type => type === sanitizedDamageType)) {
-					throw `Damage type '${type}' does not exist. It must be one of the following: ${damageTypes.join(', ')}`
+				const capitalizedDamageType = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(); // Capitalize the damage type so that it matches the DamageType enum keys
+				if (!DamageTypes.find(type => type === capitalizedDamageType)) {
+					throw APIError(400, `Damage type '${type}' does not exist. It must be one of the following: ${DamageTypes.join(', ')}`);
 				}
 
-				const damageType = DamageType[sanitizedDamageType];
-
-				const character = dealDamage(name, amount, damageType as unknown as DamageType);
+				const damageType = DamageType[capitalizedDamageType];
+				const character = dealDamage(character_id, amount, damageType as unknown as DamageType);
 
 				res.status(200).send(character);
 			} catch (e) {
-				console.error(e);
-				if (e) {
-					res.status(400).send(formatError(e));
-				} else {
-					res.status(500).send(formatError(e));
-				}
+				handleError(e, res);
 			}
 		}
 	},
@@ -34,26 +38,41 @@ export default [
 		path: '/heal',
 		handler: async (req: Request, res: Response) => {
 			try {
-				let { name, amount, temp } = req.body;
+				let { character_id, amount, temp } = req.body;
+				validateCharacter(character_id);
 
-				const character = healHitPoints(name, amount, temp);
+				if (amount < 0) {
+					throw APIError(400, `Received '${amount}'. Can not heal character for a negative amount`);
+				}
+
+				const character = healHitPoints(character_id, amount, temp);
 
 				res.status(200).send(character);
 			} catch (e) {
-				res.status(500).send(formatError(e));
+				handleError(e, res);
 			}
 		}
 	},
 ];
 
-function formatError(e) {
-	let message: string;
-	try {
-		message = JSON.parse(e);
-	} catch (err) {}
+function validateCharacter(id: string) {
+	if (!characterExists(id)) {
+		throw APIError(400, `Could not find character with ID '${id}'`);
+	}
+}
 
-	return {
-		error: message ? message : e,
-		status: e.status ? e.status : 500
+function handleError(e: Error | APIError, res: Response) {
+	console.error(e); // This would go to a logging service in a production application
+
+	if (e.name === 'APIError') {
+		res.status((e as APIError).status).send({
+			error: (e as APIError).message,
+			status: (e as APIError).status
+		});
+	} else {
+		res.status(500).send({
+			error: 'An unknown error occurred. Please try again later.',
+			status: 500
+		});
 	}
 };

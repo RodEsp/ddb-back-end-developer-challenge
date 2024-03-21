@@ -1,4 +1,3 @@
-
 export type HitPoints = {
 	max: number,
 	current: number,
@@ -46,7 +45,7 @@ export enum DamageType {
 	Psychic,
 	Force,
 };
-export type DamageTypes = Lowercase<keyof typeof DamageType>;
+export const DamageTypes = Object.keys(DamageType).filter(t => Number.isNaN(parseInt(t))) as Array<Lowercase<keyof typeof DamageType>>; // Have to filter these because of how enums are represented as objects by Typescript
 
 export enum DefenseMultiplier {
 	Immunity = 0,
@@ -58,7 +57,7 @@ export type Defense = {
 	multiplier: DefenseMultiplier;
 };
 export type DefenseSaveFormat = { 
-	type: DamageTypes;
+	type: Lowercase<keyof typeof DamageType>;
 	defense: Lowercase<keyof typeof DefenseMultiplier>;
 };
 

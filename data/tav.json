@@ -3,29 +3,29 @@
 	"level": 4,
 	"hitPoints": 20,
 	"classes": [
-	  {
-		"name": "sorcerer",
-		"hitDiceValue": 10,
-		"classLevel": 4
-	  }
+		{
+			"name": "sorcerer",
+			"hitDiceValue": 10,
+			"classLevel": 4
+		}
 	],
 	"stats": {
-	  "strength": 8,
-	  "dexterity": 10,
-	  "constitution": 16,
-	  "intelligence": 12,
-	  "wisdom": 16,
-	  "charisma": 12
+		"strength": 8,
+		"dexterity": 10,
+		"constitution": 16,
+		"intelligence": 12,
+		"wisdom": 16,
+		"charisma": 12
 	},
 	"items": [],
 	"defenses": [
-	  {
-		"type": "lightning",
-		"defense": "immunity"
-	  },
-	  {
-		"type": "thunder",
-		"defense": "resistance"
-	  }
+		{
+			"type": "lightning",
+			"defense": "immunity"
+		},
+		{
+			"type": "thunder",
+			"defense": "resistance"
+		}
 	]
-  }
+}

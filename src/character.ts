@@ -1,7 +1,8 @@
 import { Class, DamageType, Defense, DefenseMultiplier, DefenseSaveFormat, HitPoints, Item, Stats } from "./types.js";
 
-export type CharacterSaveData = Omit<Character, 'hitPoints' | 'defenses' | 'damage' | 'modifyHitPoints' > & { hitPoints: number, defenses: Array<DefenseSaveFormat> }
+export type CharacterSaveData = Omit<Character, 'hitPoints' | 'defenses' | 'damage' | 'modifyHitPoints' > & { filename: string, hitPoints: number, defenses: Array<DefenseSaveFormat> }
 export default class Character {
+	id: string;
 	name: string;
 	level: number;
 	hitPoints: HitPoints;
@@ -11,6 +12,7 @@ export default class Character {
 	defenses: Array<Defense>;
 
 	constructor(data: CharacterSaveData) {
+		this.id = data.filename;
 		this.name = data.name;
 		this.level = data.level;
 		this.hitPoints = {
@@ -32,7 +34,7 @@ export default class Character {
 		let defense = this.defenses.find((d: Defense) => d.damageType === type);
 
 		if (defense) {
-			adjusted_damage = amount * defense.multiplier;
+			adjusted_damage = Math.floor(amount * defense.multiplier); // This should always be rounded down according to the player handbook: https://www.dndbeyond.com/sources/basic-rules/introduction#RoundDown
 		}
 
 		this.modifyHitPoints(-adjusted_damage);

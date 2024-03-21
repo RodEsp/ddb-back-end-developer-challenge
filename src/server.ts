@@ -25,7 +25,7 @@ for (const route of routes) {
 			status: 400,
 			docs: docsPath(req)
 		})
-	}); 
+	});
 }
 
 // Add a catch-all handler for when a route that doesn't exist is requested

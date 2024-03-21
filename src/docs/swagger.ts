@@ -3,6 +3,7 @@ import swaggerUI from 'swagger-ui-express';
 import packageJSON from '../../package.json' with { type: 'json' };
 
 const charExample = {
+	id: "briv",
 	name: "Briv",
 	level: 5,
 	hitPoints: {
@@ -82,11 +83,11 @@ const openAPISpec = {
 						'application/json': {
 							schema: {
 								type: 'object',
-								required: ['name', 'amount', 'type'],
+								required: ['character_id', 'amount', 'type'],
 								properties: {
-									name: {
+									character_id: {
 										type: 'string',
-										example: 'Briv'
+										example: 'briv'
 									},
 									amount: {
 										type: 'number',
@@ -139,12 +140,12 @@ const openAPISpec = {
 						'application/json': {
 							schema: {
 								type: 'object',
-								required: ['name', 'amount'],
+								required: ['character_id', 'amount'],
 								properties: {
-									name: {
+									character_id: {
 										type: 'string',
-										description: 'The name of the character to heal',
-										example: 'Briv'
+										description: 'The character_id of the character to heal',
+										example: 'briv'
 									},
 									amount: {
 										type: 'number',
